@@ -44,6 +44,7 @@ In Preprocessing step, several operations performed to preprocess input images.
 
 
 ### Data Augmentation
+In order to augment the dataset, we transformed each image in two ways. The first transformation was image rotation by 90 degrees. The second transformation was flipping images vertically [23]. In this way, we augmented our dataset three times, resulting in 9192 images.
 @TODO
 ### Network Architecture
 @TODO

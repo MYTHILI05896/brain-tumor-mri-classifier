@@ -32,14 +32,14 @@ def extract_image_contour(image, plot=False):
     Finds the extreme points on the image and crops the rectangular out of them
     """
 
-    # Convert to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    # Convert the image to grayscale, and blur it slightly
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Blur
-    gray = cv2.GaussianBlur(gray, (3, 3), 0)
+    gray_blured = cv2.GaussianBlur(gray, (3, 3), 0)
 
     # Apply binary threshold
-    thresh = cv2.threshold(gray, 45, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(gray_blured, 45, 256, cv2.THRESH_BINARY)[1]
 
     # Perform a series of erosion
     thresh = cv2.erode(thresh, None, iterations=2)
@@ -85,8 +85,11 @@ def extract_image_contour(image, plot=False):
 
 
 def preprocess_image(image):
-    # Resize image to 265x265
+    # Resize image to 256x256
     image = cv2.resize(image, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
+
+    # Reshape to add a single channel dimension to the image as its gray
+    image = image.reshape((256, 256, 1))
 
     # Convert the image to float and normalize it
     image = image.astype(np.float32)
