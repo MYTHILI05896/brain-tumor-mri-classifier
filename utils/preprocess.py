@@ -3,6 +3,7 @@ import os
 import cv2
 import numpy as np
 from tqdm import tqdm
+from sklearn.utils import shuffle
 
 from setup import downloader, unziper, extractor
 
@@ -63,6 +64,9 @@ def preprocess_image(image):
     # Resize image to 256x256
     image = cv2.resize(image, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
 
+    # Convert the image to grayscale
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
     # Normalize the image
     image = image.astype(np.float32)
     image = (image - np.min(image)) / (np.max(image) - np.min(image))
@@ -72,4 +76,83 @@ def preprocess_image(image):
 
     return image
 
-# def save_image(image, path):
+
+def save_augmented_images(data, destination_path, labels):
+    extractor.clear_screen()
+    extractor.make_folder(destination_path)
+
+    num_batches = len(data)
+    progress_bar = tqdm(total=num_batches, desc=f'Augmenting images')
+
+    # Iterate over the generated batches
+    for i, (batch_x, batch_y) in enumerate(data):
+        # Get the label of the image
+        label = batch_y[0]
+        label_name = labels[label]
+        label_dir = os.path.join(destination_path, label_name)
+
+        # Create a directory for the label if it doesn't exist
+        extractor.make_folder(label_dir)
+
+        # Iterate over the images in the batch
+        for j in range(batch_x.shape[0]):
+            image_path = os.path.join(label_dir, f'Tr-{label_name[:2]}_{i * batch_x.shape[0] + j}.png')
+            cv2.imwrite(image_path, batch_x[j])
+
+        progress_bar.update(1)
+
+        # Exit the loop if all batches have been processed
+        if i == num_batches - 1:
+            break
+
+    progress_bar.close()
+
+
+def save_augmented_image(data, destination_path):
+    extractor.clear_screen()
+
+    extractor.make_folder(destination_path)
+
+    # Iterate over the generated batches
+    for i, (batch_x, batch_y) in enumerate(data):
+        progress_bar = tqdm(total=batch_x.shape[0], desc=f'Augmenting images')
+
+        # Iterate over the images in the batch
+        for j in range(batch_x.shape[0]):
+            # Get the label of the image
+            label = batch_y[j]
+            extractor.make_folder(os.path.join(destination_path, str(label)))
+
+            # Save the image to the appropriate directory
+            image_path = os.path.join(destination_path, str(label), f'image_{i * 32 + j}.png')
+            cv2.imwrite(image_path, batch_x[j])
+            progress_bar.update(1)
+
+        progress_bar.close()
+
+
+def load_data(dataset_path, labels):
+    """ Load each label dataset into list.
+    Parameters:
+        dataset_path(str): Name of the path for dataset.
+        labels(str): Name of the path for the label dataset.
+    Returns: 2 lists of data & labels
+    """
+
+    X = []
+    y = []
+    for label in labels:
+        label_data = os.path.join(dataset_path, label)
+        for filename in os.listdir(label_data):
+            file_path = os.path.join(label_data, filename)
+            image = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+            X.append(image)
+            y.append(labels.index(label))
+
+    X = np.array(X)
+    y = np.array(y)
+
+    # Shuffle the data
+    X, y = shuffle(X, y)
+
+    return X, y

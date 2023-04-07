@@ -30,10 +30,10 @@ def extract_contour(image, plot=False):
     """ Finds the extreme points on the image and crops the rectangular out of them
     """
 
-    # Convert the image to grayscale, and blur it slightly
+    # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Blur
+    # Blur it slightly to reduce the noise and smooth the edges.
     gray_blured = cv2.GaussianBlur(gray, (3, 3), 0)
 
     # Apply binary threshold
