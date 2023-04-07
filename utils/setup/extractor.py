@@ -1,7 +1,6 @@
 import os
 import cv2
 import imutils
-import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
@@ -27,9 +26,8 @@ def make_folder(target_folder):
         os.mkdir(target_folder)
 
 
-def extract_image_contour(image, plot=False):
-    """
-    Finds the extreme points on the image and crops the rectangular out of them
+def extract_contour(image, plot=False):
+    """ Finds the extreme points on the image and crops the rectangular out of them
     """
 
     # Convert the image to grayscale, and blur it slightly
@@ -84,30 +82,6 @@ def extract_image_contour(image, plot=False):
     return new_image
 
 
-def preprocess_image(image):
-    # Resize image to 256x256
-    image = cv2.resize(image, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
-
-    # Reshape to add a single channel dimension to the image as its gray
-    image = image.reshape((256, 256, 1))
-
-    # Convert the image to float and normalize it
-    image = image.astype(np.float32)
-    mean, std = np.mean(image), np.std(image)
-    image = (image - mean) / std
-
-    # Ensure that the pixel values are between 0 and 1
-    image = np.clip(image, 0, 1)
-
-    # Convert the image back to uint8
-    image = image.astype(np.uint8)
-
-    # remove images noise.
-    image = cv2.bilateralFilter(image, 2, 50, 50)
-
-    return image
-
-
 def crop_images(source_path, destination_path):
     """ Read images, crop, save them.
     Parameters:
@@ -139,7 +113,7 @@ def crop_images(source_path, destination_path):
                 img = cv2.imread(original_path)
 
                 # Crop the image
-                cropped_img = extract_image_contour(img)
+                cropped_img = extract_contour(img)
 
                 # Save the optimized image
                 optimized_path = os.path.join(destination_path, sub_dir, file)
