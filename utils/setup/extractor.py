@@ -37,7 +37,7 @@ def extract_contour(image, plot=False):
     gray_blured = cv2.GaussianBlur(gray, (3, 3), 0)
 
     # Apply binary threshold
-    thresh = cv2.threshold(gray_blured, 45, 256, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(gray_blured, 45, 255, cv2.THRESH_BINARY)[1]
 
     # Perform a series of erosion
     thresh = cv2.erode(thresh, None, iterations=2)
@@ -101,7 +101,7 @@ def crop_images(source_path, destination_path):
             # print(f'Processing {destination_path}/{sub_dir} images')
 
             # create progress bar with total number of files to optimize
-            progress_bar = tqdm(total=len(files), desc=f'Processing {sub_dir} images')
+            progress_bar = tqdm(total=len(files), desc=f'Processing {sub_dir} images', dynamic_ncols=True)
 
             for file in files:
                 # Only process JPG files

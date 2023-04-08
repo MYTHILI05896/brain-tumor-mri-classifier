@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import cv2
 import numpy as np
@@ -32,8 +33,12 @@ def extract_images(source_path, dataset_path):
     print("Images cropped successfully.")
 
 
-def preprocess_data(source_path, destination_path):
+def preprocess_data(source_path, destination_path, img_size=256):
     extractor.clear_screen()
+
+    if os.path.exists(destination_path):
+        shutil.rmtree(destination_path)
+
     extractor.make_folder(destination_path)
 
     for root, dirs, files in os.walk(source_path):
@@ -42,7 +47,7 @@ def preprocess_data(source_path, destination_path):
 
         # extract each file and update the progress bar
         if files:
-            progress_bar = tqdm(total=len(files), desc=f'Processing {sub_dir} images')
+            progress_bar = tqdm(total=len(files), desc=f'Processing {sub_dir} images', dynamic_ncols=True)
             for file in files:
                 if not file.endswith('.jpg'):
                     continue
@@ -50,7 +55,7 @@ def preprocess_data(source_path, destination_path):
                 # Read the original image
                 original_path = os.path.join(root, file)
                 img = cv2.imread(original_path)
-                processed_img = preprocess_image(img)
+                processed_img = preprocess_image(img, img_size)
 
                 # Save the optimized image
                 processed_path = os.path.join(destination_path, sub_dir, file)
@@ -60,9 +65,9 @@ def preprocess_data(source_path, destination_path):
             progress_bar.close()
 
 
-def preprocess_image(image):
-    # Resize image to 256x256
-    image = cv2.resize(image, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
+def preprocess_image(image, size=256):
+    # Resize image
+    image = cv2.resize(image, dsize=(size, size), interpolation=cv2.INTER_CUBIC)
 
     # Convert the image to grayscale
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -74,61 +79,51 @@ def preprocess_image(image):
     # remove images noise.
     image = cv2.bilateralFilter(image, 2, 50, 50)
 
+    image = (image * 255).astype(np.uint8)
+
     return image
 
 
 def save_augmented_images(data, destination_path, labels):
     extractor.clear_screen()
+
+    if os.path.exists(destination_path):
+        shutil.rmtree(destination_path)
+
     extractor.make_folder(destination_path)
 
-    num_batches = len(data)
-    progress_bar = tqdm(total=num_batches, desc=f'Augmenting images')
+    num_batches = len(data[0])
+    progress_bar = tqdm(total=num_batches, desc=f'Saving augmented images', dynamic_ncols=True)
 
     # Iterate over the generated batches
-    for i, (batch_x, batch_y) in enumerate(data):
+    for i, (batch_x, batch_y) in enumerate(zip(*data)):
         # Get the label of the image
-        label = batch_y[0]
+        label = batch_y
+
         label_name = labels[label]
         label_dir = os.path.join(destination_path, label_name)
 
         # Create a directory for the label if it doesn't exist
         extractor.make_folder(label_dir)
 
+        #batch_x = batch_x.reshape((batch_x.shape[0], 256, 256))
+
+
         # Iterate over the images in the batch
         for j in range(batch_x.shape[0]):
-            image_path = os.path.join(label_dir, f'Tr-{label_name[:2]}_{i * batch_x.shape[0] + j}.png')
+            #img = np.expand_dims(batch_x[j], axis=-1)
+            #img = Image.fromarray(img.astype('uint8'), 'L')
+
+            image_path = os.path.join(label_dir, f'Tr-{label_name[:2]}_{i * batch_x.shape[0] + j}.jpg')
             cv2.imwrite(image_path, batch_x[j])
 
         progress_bar.update(1)
 
         # Exit the loop if all batches have been processed
-        if i == num_batches - 1:
-            break
+        #if i == num_batches - 1:
+         #   break
 
     progress_bar.close()
-
-
-def save_augmented_image(data, destination_path):
-    extractor.clear_screen()
-
-    extractor.make_folder(destination_path)
-
-    # Iterate over the generated batches
-    for i, (batch_x, batch_y) in enumerate(data):
-        progress_bar = tqdm(total=batch_x.shape[0], desc=f'Augmenting images')
-
-        # Iterate over the images in the batch
-        for j in range(batch_x.shape[0]):
-            # Get the label of the image
-            label = batch_y[j]
-            extractor.make_folder(os.path.join(destination_path, str(label)))
-
-            # Save the image to the appropriate directory
-            image_path = os.path.join(destination_path, str(label), f'image_{i * 32 + j}.png')
-            cv2.imwrite(image_path, batch_x[j])
-            progress_bar.update(1)
-
-        progress_bar.close()
 
 
 def load_data(dataset_path, labels):

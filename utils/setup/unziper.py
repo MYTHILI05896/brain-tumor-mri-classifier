@@ -27,7 +27,7 @@ def unzip_file(source_name, destination):
         # get list of all files to extract
         file_list = zipfile.namelist()
         # create progress bar with total number of files to extract
-        progress_bar = tqdm(total=len(file_list), desc='Extracting')
+        progress_bar = tqdm(total=len(file_list), desc='Extracting Images', dynamic_ncols=True)
 
         # extract each file and update the progress bar
         for file in file_list:
