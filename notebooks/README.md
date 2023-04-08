@@ -1,3 +1,6 @@
+**Please take a look on [project github repo](https://github.com/NassarX/Brain-Tumor-MRI-Classifier) for a full working notebook and link to colab**
+
+
 # Brain MRI Tumor Classification
 
 Course project of **`Deep Learning`**  course - [MDSAA-DS](www.novaims.unl.pt/MDSAA-DS) - Spring 2023
@@ -58,7 +61,7 @@ In order to load our dataset and labeling each element :
     - Save processed images into new directory.
 
 ### Network Architecture
-@TODO
+
 
 ## Getting Started
-
+@TODO
