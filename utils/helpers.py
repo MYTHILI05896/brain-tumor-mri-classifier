@@ -20,7 +20,7 @@ def compute_f1_score(y_true, prob):
     # convert the vector of probabilities to a target vector
     y_pred = np.where(prob > 0.5, 1, 0)
 
-    score = f1_score(y_true, y_pred)
+    score = f1_score(y_true, prob, average='macro')
 
     return score
 
@@ -28,7 +28,7 @@ def compute_f1_score(y_true, prob):
 # defining the functions
 def confusion_matrix(data_set, predictions, labels):
     cmatrix = cm(data_set, predictions)
-    fig, ax = plt.subplots(figsize=(8,8))
+    fig, ax = plt.subplots(figsize=(8, 8))
     sns.heatmap(cmatrix, annot=True, cmap='Blues', fmt='g', ax=ax)
     ax.set_xlabel('Predicted labels')
     ax.set_ylabel('True labels')
@@ -37,8 +37,6 @@ def confusion_matrix(data_set, predictions, labels):
     ax.yaxis.set_ticklabels(labels)
     plt.show()
     print('Confusion matrix')
-
-
 
 
 def classification_report(data_set, predictions, labels):
