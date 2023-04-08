@@ -70,7 +70,7 @@ def preprocess_image(image, size=256):
     image = cv2.resize(image, dsize=(size, size), interpolation=cv2.INTER_CUBIC)
 
     # Convert the image to grayscale
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Normalize the image
     image = image.astype(np.float32)
@@ -140,7 +140,8 @@ def load_data(dataset_path, labels):
         label_data = os.path.join(dataset_path, label)
         for filename in os.listdir(label_data):
             file_path = os.path.join(label_data, filename)
-            image = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+            image = cv2.imread(file_path)
+            #image = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
             X.append(image)
             y.append(labels.index(label))
 

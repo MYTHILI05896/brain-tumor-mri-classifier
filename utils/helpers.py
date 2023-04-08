@@ -2,6 +2,7 @@ import os
 
 import cv2
 import numpy as np
+import seaborn as sns
 from matplotlib import pyplot as plt
 from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix as cm, classification_report as cr
@@ -25,9 +26,19 @@ def compute_f1_score(y_true, prob):
 
 
 # defining the functions
-def confusion_matrix(data_set, predictions):
+def confusion_matrix(data_set, predictions, labels):
+    cmatrix = cm(data_set, predictions)
+    fig, ax = plt.subplots(figsize=(8,8))
+    sns.heatmap(cmatrix, annot=True, cmap='Blues', fmt='g', ax=ax)
+    ax.set_xlabel('Predicted labels')
+    ax.set_ylabel('True labels')
+    ax.set_title('Confusion Matrix')
+    ax.xaxis.set_ticklabels(labels)
+    ax.yaxis.set_ticklabels(labels)
+    plt.show()
     print('Confusion matrix')
-    return cm(data_set, predictions)
+
+
 
 
 def classification_report(data_set, predictions, labels):
