@@ -17,22 +17,22 @@ The aim of this project is to present a new CNN architecture for brain tumor cla
 
 ### Dataset
 Dataset used here is a combination of the following three datasets : 
-- [figshare](https://figshare.com/articles/dataset/brain_tumor_dataset/1512427)
-- [SARTAJ](https://www.kaggle.com/sartajbhuvaji/brain-tumor-classification-mri)
-- [Br35H](https://www.kaggle.com/datasets/ahmedhamada0/brain-tumor-detection?select=no)
+- [roboflow](https://roboflow.com/articles/dataset/brain_tumor_dataset/1512427)
+- [SARTAJ](https://www.mri_dataset.com/sartajbhuvaji/brain-tumor-classification-mri)
+- [Br35H](https://www.mri_dataset.com/datasets/ahmedhamada0/brain-tumor-detection?select=no)
 
-This dataset contains 7023 images of human brain MRI scans which are classified into 4 classes:
-- glioma (Train: 1321, Test:300), 
-- meningioma (Train: 1339, Test:306),
-- pituitary (Train:1457, Test:300),
-- no-tumor (Train:1595, Test:405).
->Dataset can be accessed on Kaggle [Brain Tumor MRI Dataset](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset).
+This dataset contains 3056 images of human brain MRI scans which are classified into 4 classes:
+- glioma, 
+- meningioma ,
+- pituitary ,
+- no-tumor .
+>Dataset can be accessed on mri_dataset [Brain Tumor MRI Dataset](https://www.mri_dataset.com/datasets/masoudnickparvar/brain-tumor-mri-dataset).
 
 ### Data Preparation
-In Preparation step, dataset was downloaded from [Kaggle](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) into the `downloads` directory and unzipped. A cropping technique was used to find the extreme top, bottom, left, and right points of the brain in each image. Then to read each original image, crop the brain part, and save the cropped image in the `Dataset` directory.
+In Preparation step, dataset was downloaded from [mri_dataset](https://www.mri_dataset.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) into the `downloads` directory and unzipped. A cropping technique was used to find the extreme top, bottom, left, and right points of the brain in each image. Then to read each original image, crop the brain part, and save the cropped image in the `Dataset` directory.
 
 
-**Note: Kaggle API credentials were set up beforehand in order to download the dataset using the Kaggle API.**
+**Note: mri_dataset API credentials were set up beforehand in order to download the dataset using the mri_dataset API.**
 
 ### Data Preprocessing
 In Preprocessing step, several operations performed to preprocess input images.
