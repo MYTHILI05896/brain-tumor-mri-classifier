@@ -1,6 +1,6 @@
 # Brain MRI Tumor Classification
 
-Course project of **`Deep Learning`**  course - [MDSAA-DS](www.novaims.unl.pt/MDSAA-DS) - Spring 2023
+
 
 ## Details of the Project
 
